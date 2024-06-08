@@ -334,7 +334,8 @@ class FlxTilemapExt extends FlxTilemap
 	 * @param   position            Optional, specify a custom position for the tilemap (useful for overlapsAt()-type functionality).
 	 * @return  Whether there were overlaps, or if a callback was specified, whatever the return value of the callback was.
 	 */
-	override public function overlapsWithCallback(object:FlxObject, ?callback:FlxObject->FlxObject->Bool, flipCallbackParams:Bool = false,
+	#if (flixel < "5.9.0")
+	override function overlapsWithCallback(object:FlxObject, ?callback:FlxObject->FlxObject->Bool, flipCallbackParams:Bool = false,
 			?position:FlxPoint):Bool
 	{
 		var results:Bool = false;
@@ -376,7 +377,7 @@ class FlxTilemapExt extends FlxTilemap
 
 				final tile = _tileObjects[dataIndex];
 
-				if (tile.allowCollisions != NONE)
+				if (tile.solid)
 				{
 					var overlapFound = false;
 
@@ -425,6 +426,53 @@ class FlxTilemapExt extends FlxTilemap
 
 		return results;
 	}
+	#else
+	
+	/**
+	 * Hacky fix for `FlxTilemapExt`, with all the new changes to 5.9.0 it's better to perfectly
+	 * recreate the old behavior, here and then make a new tilemap with slopes that uses the new
+	 * features to eventually replace it
+	 */
+	override function objectOverlapsTiles<TObj:FlxObject>(object:TObj, ?callback:(FlxTile, TObj) -> Bool, ?position:FlxPoint, isCollision = true):Bool
+	{
+		var results = false;
+		function each(tile:FlxTile)
+		{
+			if (tile.solid)
+			{
+				var overlapFound = false;
+				if (callback != null)
+				{
+					overlapFound = callback(tile, object);
+				}
+				else
+				{
+					overlapFound = tile.overlapsObject(object);
+				}
+				
+				// New generalized slope collisions
+				if (overlapFound || checkArrays(tile.index))
+				{
+					if (tile.callbackFunction != null)
+					{
+						tile.callbackFunction(tile, object);
+						tile.onCollide.dispatch(tile, object);
+					}
+					results = true;
+				}
+			}
+			else if ((tile.callbackFunction != null) && ((tile.filter == null) || Std.isOfType(object, tile.filter)))
+			{
+				tile.callbackFunction(tile, object);
+				tile.onCollide.dispatch(tile, object);
+			}
+		}
+		
+		forEachOverlappingTile(object, each, position);
+		
+		return results;
+	}
+	#end
 
 	/**
 	 * Set glue to force contact with slopes and a slow down factor while climbing
