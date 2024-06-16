@@ -74,7 +74,7 @@ class FlxTiledSprite extends FlxStrip
 		vertices[2] = width;
 		vertices[3] = 0;
 		vertices[4] = width;
-		vertices[5] = weight;
+		vertices[5] = width;
 		vertices[6] = 0;
 		vertices[7] = height;
 		
@@ -368,7 +368,7 @@ class FlxTiledSprite extends FlxStrip
 		return repeatX = value;
 	}
 
-	function set_repeatY(Value:Bool):Bool
+	function set_repeatY(value:Bool):Bool
 	{
 		if (value != repeatY)
 			regen = true;
