@@ -78,7 +78,7 @@ class FlxSkewedSprite extends FlxSprite
 			_point.floor();
 
 		doAdditionalMatrixStuff(_matrix, camera);
-;
+
 		camera.drawPixels(_frame, framePixels, _matrix, colorTransform, blend, antialiasing, shader);
 	}
 
