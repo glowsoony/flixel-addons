@@ -558,7 +558,7 @@ class FlxExtendedMouseSprite extends FlxSprite
 		if (_allowVerticalDrag)
 		{
 			#if FLX_MOUSE
-			y = Math.floor(viewY + scrollFactor.y * (FlxG.mouse.y - viewY)) - _dragOffsetY
+			y = Math.floor(viewY + scrollFactor.y * (FlxG.mouse.y - viewY)) - _dragOffsetY;
 			#end
 		}
 
