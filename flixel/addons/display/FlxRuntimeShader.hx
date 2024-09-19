@@ -86,7 +86,7 @@ class FlxRuntimeShader extends FlxGraphicsShader
 			return null;
 		}
 
-		return prop.value[0];
+		return shaderParameter.value[0];
 	}
 
 	/**
