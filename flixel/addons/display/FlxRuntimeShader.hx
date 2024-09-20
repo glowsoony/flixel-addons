@@ -322,6 +322,24 @@ class FlxRuntimeShader extends FlxGraphicsShader
 			for (field in Reflect.fields(data)) LabelValuePair.weak(field, Reflect.field(data, field))
 		]);
 	}
+
+	@:noCompletion
+	public static function processDataSource(value:String, type:String):String
+	{
+		if (value != null)
+		{
+			switch (type)
+			{
+				case 'fragment', 'frag':
+					value = value.replace("#pragma header", FlxRuntimeShaderMacro.retrieveMetadata('glFragmentHeader'))
+						.replace("#pragma body", FlxRuntimeShaderMacro.retrieveMetadata('glFragmentBody'));
+				case 'vertex', 'vert':
+					value = value.replace("#pragma header", FlxRuntimeShaderMacro.retrieveMetadata('glVertexHeader'))
+						.replace("#pragma body", FlxRuntimeShaderMacro.retrieveMetadata('glVertexBody'));
+			}
+		}
+		return value;
+	}
 	
 	@:noCompletion
 	private override function __processGLData(source:String, storageType:String):Void

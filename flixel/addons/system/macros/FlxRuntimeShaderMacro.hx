@@ -1,6 +1,5 @@
 package flixel.addons.system.macros;
 
-#if macro
 import haxe.macro.Context;
 import haxe.macro.Expr;
 import haxe.macro.Type;
@@ -42,6 +41,7 @@ class FlxRuntimeShaderMacro
 		return macro $v{result};
 	}
 
+	#if macro
 	@:noCompletion
 	private static function checkClassForMetadata(classType:ClassType, metaName:String, overwrite:Bool, currentResult:String):String
 	{
@@ -74,5 +74,5 @@ class FlxRuntimeShaderMacro
 		
 		return result;
 	}
+	#end
 }
-#end
